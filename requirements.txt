@@ -62,7 +62,7 @@ Pillow==10.0.1
 plotly @ file:///Users/nicolas/opt/miniconda3/envs/env/conda-bld/plotly_1649173020953/work/packages/python/plotly/dist/plotly-5.7.0.tar.gz
 prometheus-client==0.14.1
 prompt-toolkit==3.0.29
-protobuf==3.20.0
+protobuf==3.20.2
 psutil==5.9.0
 pure-eval==0.2.2
 pyarrow==14.0.1
