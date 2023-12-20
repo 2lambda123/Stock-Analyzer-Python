@@ -92,7 +92,7 @@ sniffio==1.2.0
 sortedcontainers==2.4.0
 soupsieve==2.3.2
 stack-data==0.2.0
-streamlit==1.8.1
+streamlit==1.11.1
 tenacity @ file:///C:/ci/tenacity_1626248381338/work
 terminado==0.13.3
 tinycss2==1.1.1
