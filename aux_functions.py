@@ -38,6 +38,33 @@ def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
     
     # Cleaning
     df.drop(df.loc[["Income Statement", "SEC Link", "Balance Sheet", "Cash Flow Statement" ]].index, inplace=True)
+def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
+    
+    # Cleaning
+    df.drop(df.loc[["Income Statement", "SEC Link", "Balance Sheet", "Cash Flow Statement" ]].index, inplace=True)
+    
+    # Remove unnecessary columns
+    df.drop(["General and Admin. Exp.","Selling and Marketing Exp."], axis=1, inplace=True)
+    
+    return df.T
+def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
+    
+    # Cleaning
+    df.drop(df.loc[["Income Statement", "SEC Link", "Balance Sheet", "Cash Flow Statement" ]].index, inplace=True)
+    
+    # Remove unnecessary columns
+    df.drop(["General and Admin. Exp.","Selling and Marketing Exp."], axis=1, inplace=True)
+    
+    return df.T
+def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
+    
+    # Cleaning
+    df.drop(df.loc[["Income Statement", "SEC Link", "Balance Sheet", "Cash Flow Statement" ]].index, inplace=True)
+    
+    # Remove unnecessary columns
+    df.drop(["General and Admin. Exp.","Selling and Marketing Exp."], axis=1, inplace=True)
+    
+    return df.T
 
     df.replace("- -", None, regex=True, inplace=True) 
     df.replace(",", "", regex=True, inplace=True) 
