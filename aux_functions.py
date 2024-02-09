@@ -236,7 +236,7 @@ def applyFix(row, col, visited_columns, trivial_fix=False):
         print("Ya visitada. Saliendo...")
         return row[col]
 
-    if row[col] == np.nan:
+    if np.isnan(row[col]):
         print("No es nula. Saliendo...")
         return row[col]
 
