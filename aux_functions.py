@@ -13,6 +13,31 @@ core_columns = ["Revenue", "Gross Profit", "Operating Income","Income Tax Expens
 
 
 def calculateGrowthMetrics(df, columns):
+    """Calculates growth metrics for specified columns in a given dataframe.
+    Parameters:
+        - df (pandas dataframe): The dataframe to be used for calculation.
+        - columns (list): A list of column names for which growth metrics will be calculated.
+    Returns:
+        - df (pandas dataframe): The original dataframe with added columns for growth metrics.
+    Processing Logic:
+        - Calculates year-over-year growth for each column.
+        - Calculates 3-year, 5-year, and 10-year average growth for each column.
+        - Calculates compound annual growth rate (CAGR) for each column.
+        - Returns the transposed dataframe for easier viewing.
+    Example:
+        df = pd.DataFrame({'Year': [2016, 2017, 2018, 2019, 2020],
+    'Revenue': [100, 120, 150, 180, 200],
+    'Profit': [10, 15, 20, 25, 30]})
+        columns = ['Revenue', 'Profit']
+        calculateGrowthMetrics(df, columns)
+        Output:
+    Year  Revenue  Profit  Revenue growth yy  Revenue growth 3y. av.  Revenue growth 5y. av.  Revenue growth 10y. av.  Revenue cagr  Profit growth yy  Profit growth 3y. av.  Profit growth 5y. av.  Profit growth 10y. av.  Profit cagr
+        0   2016      100      10                NaN                       NaN                       NaN                        NaN           NaN               NaN                    NaN                    NaN          NaN
+        1   2017      120      15           0.200000                       NaN                       NaN                        NaN           NaN          0.500000                    NaN                    NaN          NaN
+        2   2018      150      20           0.250000                  0.216667                       NaN                        NaN           NaN          0.333333                    NaN                    NaN          NaN
+        3   2019      180      25           0.200000                  0.216667                  0.216667                        NaN           NaN          0.250000               0.361111                    NaN          NaN
+        4   2020      200      30           0.111111                  0.187037                  0.190741                   0.190741      0.090845          0.200000               0.261111               0.271111     0.219322"""
+    
     for column in columns:
         df[column+" growth yy"] = df[column] / df[column].shift(1) - 1
         df[column+" growth 3y. av."] = (df[column+" growth yy"] + df[column+" growth yy"].shift(1) + df[column+" growth yy"].shift(2))  / 3
@@ -23,6 +48,16 @@ def calculateGrowthMetrics(df, columns):
 
 
 def clean_string_to_numeric(list_of_strings):
+    """Cleans a list of strings to be safely converted to numeric values.
+    Parameters:
+        - list_of_strings (list): List of strings to be cleaned.
+    Returns:
+        - cleaned_list (list): List of strings that have been cleaned and are safe to convert to numeric values.
+    Processing Logic:
+        - Replaces commas, double dashes, and parentheses with appropriate characters.
+        - Appends each cleaned string to a new list.
+        - Returns the new list of cleaned strings."""
+    
     # Takes a list of strings and returns a cleaned list
     # safe to convert to numeric
     res = []
@@ -35,6 +70,18 @@ def clean_string_to_numeric(list_of_strings):
     return res
 
 def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
+    """Cleans and reconstructs the given dataframe.
+    Parameters:
+        - df (pandas.DataFrame): The dataframe to be cleaned and reconstructed.
+        - reconstruct_df (bool): Whether to reconstruct the dataframe or not. Default is True.
+    Returns:
+        - df (pandas.DataFrame): The cleaned and reconstructed dataframe.
+    Processing Logic:
+        - Drops unnecessary rows.
+        - Replaces certain characters with others.
+        - Converts all columns to numeric.
+        - Reconstructs the dataframe if specified."""
+    
     
     # Cleaning
     df.drop(df.loc[["Income Statement", "SEC Link", "Balance Sheet", "Cash Flow Statement" ]].index, inplace=True)
@@ -56,6 +103,28 @@ def clean_and_reconstruct_fundamentals(df, reconstruct_df=True):
     
 
 def fundamental_calculator(fundamental_data): 
+    """This function calculates various fundamental metrics for a given set of fundamental data. It takes in a pandas DataFrame containing the fundamental data as a parameter and returns a transposed version of the DataFrame with the calculated metrics added as columns.
+    Parameters:
+        - fundamental_data (DataFrame): A pandas DataFrame containing the fundamental data for a company.
+    Returns:
+        - fundamental_data (DataFrame): A transposed version of the input DataFrame with the calculated metrics added as columns.
+    Processing Logic:
+        - Transposes the input DataFrame.
+        - Calculates various fundamental metrics using the data in the DataFrame.
+        - Adds the calculated metrics as columns to the transposed DataFrame.
+    Example:
+        fundamental_data = pd.read_csv("fundamental_data.csv")
+        calculated_data = fundamental_calculator(fundamental_data)
+        print(calculated_data.head())
+        # Output:
+        #                        0           1           2           3           4
+        # Symbol                AAPL        MSFT        AMZN        GOOGL       FB
+        # Revenue per Share     45.0        50.0        55.0        60.0        65.0
+        # FCF per share         10.0        12.0        14.0        16.0        18.0
+        # CAPEX per share       5.0         6.0         7.0         8.0         9.0
+        # Book value per share  20.0        25.0        30.0        35.0        40.0
+        # Cash to Debt Ratio    0.5         0.6         0.7         0.8         0.9"""
+    
     fundamental_data = fundamental_data.T
     print(fundamental_data.columns)
     # ===================================================================================================================================
@@ -180,6 +249,25 @@ def fundamental_calculator(fundamental_data):
 
 
 def reconstructDf(df, trivial_fix =False):
+    """Reconstructs the fundamentals of a company from other elements.
+    Parameters:
+        - df (pandas.DataFrame): The dataframe containing the company's data.
+        - trivial_fix (bool): Flag to determine if a trivial fix should be applied. Defaults to False.
+    Returns:
+        - df (pandas.DataFrame): The reconstructed dataframe.
+    Processing Logic:
+        - Checks if the dataframe is empty or in good condition.
+        - Replaces infinite values with NaN.
+        - Identifies and fixes null values in each row.
+        - Drops rows with null values if necessary.
+        - Drops irrelevant columns.
+    Example:
+        >>> df = pd.DataFrame({'A': [1, 2, np.inf], 'B': [3, np.nan, 5]})
+        >>> reconstructDf(df)
+    A    B
+        0  1.0  3.0
+        1  2.0  5.0"""
+    
     # Reconstruimos los fundamentales de una empresa a partir de otros elementos
 
     min_num_filas = 1
@@ -230,6 +318,22 @@ def reconstructDf(df, trivial_fix =False):
     return df
 
 def applyFix(row, col, visited_columns, trivial_fix=False):
+    """This function applies a fix to a given row and column of a dataset, returning the repaired value. It also keeps track of visited columns to avoid infinite loops. The function has the option to apply a trivial fix, which returns a value of 0 for certain columns.
+    Parameters:
+        - row (pandas.Series): The row of the dataset to be fixed.
+        - col (str): The column of the dataset to be fixed.
+        - visited_columns (list): A list of columns that have already been visited.
+        - trivial_fix (bool): Whether or not to apply a trivial fix. Default is False.
+    Returns:
+        - repaired (float): The repaired value for the given row and column.
+    Processing Logic:
+        - If the column has already been visited, return the value in that column.
+        - If the value in the column is not null, return the value in that column.
+        - Add the column to the list of visited columns.
+        - Depending on the column, apply a specific fix to the row.
+        - If a trivial fix is applied, return a value of 0 for certain columns.
+        - If no fix is implemented, return a null value."""
+    
     # Dependiendo de la columna, aplica un arreglo
 
     if col in visited_columns:
@@ -817,6 +921,20 @@ def applyFix(row, col, visited_columns, trivial_fix=False):
 
 
 def try_repair_column(columns_to_repair,row, visited_columns, trivial_fix):
+    """Intenta reparar una columna (la principal) usando otras columnas (las secundarias).
+    Parameters:
+        - columns_to_repair (list): List of column names to repair.
+        - row (pandas.Series): Row to be repaired.
+        - visited_columns (set): Set of column names that have already been visited.
+        - trivial_fix (bool): Flag indicating whether to apply a trivial fix or not.
+    Returns:
+        - bool: True if the main column was successfully repaired, False otherwise.
+    Processing Logic:
+        - Tries to repair the main column using the secondary columns.
+        - Calls applyFix to try to repair the secondary columns.
+        - If all secondary columns are successfully repaired, the main column is repaired.
+        - If any secondary column cannot be repaired, the main column cannot be repaired either."""
+    
     # Intenta reparar una columna (la principal) usando otras coumnas (las secundarias)
     # Intenta reparar las columnas secundarias llamando a applyFix
     # Si consigue reparar las necesarias, repara la columna principal
